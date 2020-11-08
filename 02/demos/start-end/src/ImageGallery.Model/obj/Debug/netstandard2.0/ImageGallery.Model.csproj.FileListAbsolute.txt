@@ -1,9 +1,0 @@
-/home/cristian/Downloads/AzureCerts/securing-aspnet-core-3-oauth2-openid-connect/02/demos/start-end/src/ImageGallery.Model/bin/Debug/netstandard2.0/ImageGallery.Model.deps.json
-/home/cristian/Downloads/AzureCerts/securing-aspnet-core-3-oauth2-openid-connect/02/demos/start-end/src/ImageGallery.Model/bin/Debug/netstandard2.0/ImageGallery.Model.dll
-/home/cristian/Downloads/AzureCerts/securing-aspnet-core-3-oauth2-openid-connect/02/demos/start-end/src/ImageGallery.Model/bin/Debug/netstandard2.0/ImageGallery.Model.pdb
-/home/cristian/Downloads/AzureCerts/securing-aspnet-core-3-oauth2-openid-connect/02/demos/start-end/src/ImageGallery.Model/obj/Debug/netstandard2.0/ImageGallery.Model.csprojAssemblyReference.cache
-/home/cristian/Downloads/AzureCerts/securing-aspnet-core-3-oauth2-openid-connect/02/demos/start-end/src/ImageGallery.Model/obj/Debug/netstandard2.0/ImageGallery.Model.AssemblyInfoInputs.cache
-/home/cristian/Downloads/AzureCerts/securing-aspnet-core-3-oauth2-openid-connect/02/demos/start-end/src/ImageGallery.Model/obj/Debug/netstandard2.0/ImageGallery.Model.AssemblyInfo.cs
-/home/cristian/Downloads/AzureCerts/securing-aspnet-core-3-oauth2-openid-connect/02/demos/start-end/src/ImageGallery.Model/obj/Debug/netstandard2.0/ImageGallery.Model.csproj.CoreCompileInputs.cache
-/home/cristian/Downloads/AzureCerts/securing-aspnet-core-3-oauth2-openid-connect/02/demos/start-end/src/ImageGallery.Model/obj/Debug/netstandard2.0/ImageGallery.Model.dll
-/home/cristian/Downloads/AzureCerts/securing-aspnet-core-3-oauth2-openid-connect/02/demos/start-end/src/ImageGallery.Model/obj/Debug/netstandard2.0/ImageGallery.Model.pdb
