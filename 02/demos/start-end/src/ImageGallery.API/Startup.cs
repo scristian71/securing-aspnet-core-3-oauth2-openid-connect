@@ -33,7 +33,7 @@ namespace ImageGallery.API
             // it's better to store the connection string in an environment variable)
             services.AddDbContext<GalleryContext>(options =>
             {
-                options.UseSqlServer(
+                options.UseNpgsql(
                     Configuration["ConnectionStrings:ImageGalleryDBConnectionString"]);
             });
 

@@ -32,10 +32,10 @@ namespace ImageGallery.Client
                 client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
             }).ConfigurePrimaryHttpMessageHandler(() => {
                   var handler = new HttpClientHandler();
-                //   if (hostingEnvironment.IsDevelopment())
-                //   {
+                  if (Configuration["ASPNETCORE_ENVIRONMENT"] == "Development")
+                  {
                       handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
-                //   }
+                  }
                   return handler;
               });             
         }
