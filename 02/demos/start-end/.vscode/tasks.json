@@ -2,7 +2,31 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build idp",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/Marvin.IDP/Marvin.IDP.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },        
+        {
+            "label": "build api",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/ImageGallery.API/ImageGallery.API.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build client",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -12,7 +36,7 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
-        },
+        },        
         {
             "label": "publish",
             "command": "dotnet",
@@ -33,18 +57,6 @@
                 "watch",
                 "run",
                 "${workspaceFolder}/src/ImageGallery.Client/ImageGallery.Client.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/src/ImageGallery.API/ImageGallery.API.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
