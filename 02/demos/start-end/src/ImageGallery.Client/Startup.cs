@@ -6,6 +6,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using System.Net.Http;
 using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
 
 namespace ImageGallery.Client
 {
@@ -37,7 +40,28 @@ namespace ImageGallery.Client
                       handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
                   }
                   return handler;
-              });             
+              });  
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            })
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+            {
+                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.Authority = "https://localhost:44318/";
+                options.ClientId = "imagegalleryclient";
+                options.ResponseType = "code";
+                options.UsePkce = true;
+                // options.CallbackPath = new PathString("...");
+                options.Scope.Add("openid");
+                options.Scope.Add("profile");
+                options.SaveTokens = true;
+                options.ClientSecret = "secret";
+                options.GetClaimsFromUserInfoEndpoint = true;
+            });                         
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +84,9 @@ namespace ImageGallery.Client
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

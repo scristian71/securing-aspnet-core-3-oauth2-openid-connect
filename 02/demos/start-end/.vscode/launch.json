@@ -70,7 +70,7 @@
     "compounds": [
         {
           "name": "Server/Client",
-          "configurations": ["API", "Client"]
+          "configurations": ["IDP", "API", "Client"]
         }
       ]
 }
