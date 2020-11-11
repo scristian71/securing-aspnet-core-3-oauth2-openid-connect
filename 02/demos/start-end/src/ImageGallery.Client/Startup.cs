@@ -33,14 +33,7 @@ namespace ImageGallery.Client
                 client.BaseAddress = new Uri("https://localhost:44366/");
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-            }).ConfigurePrimaryHttpMessageHandler(() => {
-                  var handler = new HttpClientHandler();
-                  if (Configuration["ASPNETCORE_ENVIRONMENT"] == "Development")
-                  {
-                      handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
-                  }
-                  return handler;
-              });  
+            });  
 
             services.AddAuthentication(options =>
             {
