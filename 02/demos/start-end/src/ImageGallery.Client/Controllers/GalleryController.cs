@@ -31,7 +31,7 @@ namespace ImageGallery.Client.Controllers
         public async Task<IActionResult> Index()
         {
             await WriteOutIdentityInformation();
-            
+
             var httpClient = _httpClientFactory.CreateClient("APIClient");
 
             var request = new HttpRequestMessage(
@@ -181,6 +181,7 @@ namespace ImageGallery.Client.Controllers
 
             return RedirectToAction("Index");
         }
+
         public async Task Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -201,6 +202,8 @@ namespace ImageGallery.Client.Controllers
             {
                 Debug.WriteLine($"Claim type: {claim.Type} - Claim value: {claim.Value}");
             }
-        }        
+        }
+
+
     }
 }
