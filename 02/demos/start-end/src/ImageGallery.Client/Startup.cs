@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication;
 
 namespace ImageGallery.Client
 {
@@ -48,11 +49,17 @@ namespace ImageGallery.Client
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.Authority = "https://localhost:44318/";
                 options.ClientId = "imagegalleryclient";
-                options.ResponseType = "code";
-                //options.UsePkce = false;
-                //options.CallbackPath = new PathString("...")                
+                options.ResponseType = "code";  
                 options.Scope.Add("openid");
-                options.Scope.Add("profile");
+                options.Scope.Add("profile");             
+                //options.Scope.Add("address");
+                //options.Scope.Add("roles");
+                options.ClaimActions.Remove("nbf");
+                options.ClaimActions.DeleteClaim("sid");
+                options.ClaimActions.DeleteClaim("idp");
+                options.ClaimActions.DeleteClaim("s_hash");
+                options.ClaimActions.DeleteClaim("auth_time");
+                //options.ClaimActions.MapUniqueJsonKey("role", "role");
                 options.SaveTokens = true;
                 options.ClientSecret = "secret";
                 options.Prompt = "consent";
