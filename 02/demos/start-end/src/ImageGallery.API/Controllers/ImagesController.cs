@@ -64,6 +64,7 @@ namespace ImageGallery.API.Controllers
         }
 
         [HttpPost()]
+        [Authorize(Roles = "PayingUser")]
         public IActionResult CreateImage([FromBody] ImageForCreation imageForCreation)
         {
             // Automapper maps only the Title in our configuration
@@ -80,7 +81,7 @@ namespace ImageGallery.API.Controllers
             string fileName = Guid.NewGuid().ToString() + ".jpg";
             
             // the full file path
-            var filePath = Path.Combine($"{webRootPath}/images/{fileName}");
+            var filePath = Path.Combine($"{webRootPath}/Images/{fileName}");
 
             // write bytes and auto-close stream
             System.IO.File.WriteAllBytes(filePath, imageForCreation.Bytes);
@@ -88,9 +89,9 @@ namespace ImageGallery.API.Controllers
             // fill out the filename
             imageEntity.FileName = fileName;
 
-            // ownerId should be set - can't save image in starter solution, will
-            // be fixed during the course
-            //imageEntity.OwnerId = ...;
+            // set the ownerId on the imageEntity
+            var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub").Value;
+            imageEntity.OwnerId = ownerId;
 
             // add and save.  
             _galleryRepository.AddImage(imageEntity);
