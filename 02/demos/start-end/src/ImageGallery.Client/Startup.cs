@@ -50,11 +50,11 @@ namespace ImageGallery.Client
                 options.Authority = "https://localhost:44318/";
                 options.ClientId = "imagegalleryclient";
                 options.ResponseType = "code";  
-                options.Scope.Add("openid");
-                options.Scope.Add("profile");             
-                //options.Scope.Add("address");
-                //options.Scope.Add("roles");
-                options.ClaimActions.Remove("nbf");
+                // options.Scope.Add("openid");
+                // options.Scope.Add("profile");             
+                options.Scope.Add("address");
+                // options.Scope.Add("roles");
+                // options.ClaimActions.Remove("nbf");
                 options.ClaimActions.DeleteClaim("sid");
                 options.ClaimActions.DeleteClaim("idp");
                 options.ClaimActions.DeleteClaim("s_hash");
