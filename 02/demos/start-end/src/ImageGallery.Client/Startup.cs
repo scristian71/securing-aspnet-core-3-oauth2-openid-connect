@@ -61,13 +61,13 @@ namespace ImageGallery.Client
                 // options.Scope.Add("openid");
                 // options.Scope.Add("profile");             
                 options.Scope.Add("address");
-                // options.Scope.Add("roles");
+                options.Scope.Add("roles");
                 // options.ClaimActions.Remove("nbf");
                 options.ClaimActions.DeleteClaim("sid");
                 options.ClaimActions.DeleteClaim("idp");
                 options.ClaimActions.DeleteClaim("s_hash");
                 options.ClaimActions.DeleteClaim("auth_time");
-                //options.ClaimActions.MapUniqueJsonKey("role", "role");
+                options.ClaimActions.MapUniqueJsonKey("role", "role");
                 options.SaveTokens = true;
                 options.ClientSecret = "secret";
                 options.Prompt = "consent";
