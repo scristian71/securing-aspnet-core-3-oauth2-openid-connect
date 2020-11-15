@@ -44,7 +44,8 @@ namespace Marvin.IDP
                     "Image Gallery API",
 			        new List<string>() { "role" })
                     {
-                        Scopes = {"imagegalleryapi.role"}
+                        Scopes = {"imagegalleryapi.role"},
+			            ApiSecrets = { new Secret("apisecret".Sha256()) }
                     }
             };
         
@@ -53,6 +54,7 @@ namespace Marvin.IDP
             { 
                 new Client
                 {
+                    AccessTokenType = AccessTokenType.Reference,
                     AccessTokenLifetime = 120,
                     AllowOfflineAccess = true,
                     AbsoluteRefreshTokenLifetime = 5 * 24 * 3600, //5 days
