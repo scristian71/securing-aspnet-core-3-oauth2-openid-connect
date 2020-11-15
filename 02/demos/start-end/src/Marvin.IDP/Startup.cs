@@ -56,7 +56,7 @@ namespace Marvin.IDP
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
 
-	    builder.AddProfileService<LocalUserProfileService>();
+	        builder.AddProfileService<LocalUserProfileService>();
 
             var migrationsAssembly = typeof(Startup)
                 .GetTypeInfo().Assembly.GetName().Name;

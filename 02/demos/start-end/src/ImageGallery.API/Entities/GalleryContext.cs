@@ -12,6 +12,9 @@ namespace ImageGallery.API.Entities
 
         public DbSet<Image> Images { get; set; }
 
+        public DbSet<ApplicationUserProfile> ApplicationUserProfiles { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // seed the database with dummy data
