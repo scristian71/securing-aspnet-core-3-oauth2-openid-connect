@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using IdentityServerHost.Quickstart.UI;
+using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using IdentityServer4.EntityFramework.DbContexts;
+using System.Linq;
+using IdentityServer4.EntityFramework.Mappers;
 
 namespace Marvin.IDP
 {
@@ -21,6 +26,9 @@ namespace Marvin.IDP
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var marvinIDPDataDBConnectionString = 
+                "Host=127.0.0.1; Port=5433; Username=oauth_idt; Password=idt123; Database=oauth_idt; pooling=true";
+
             // uncomment, if you want to add an MVC-based UI
             services.AddControllersWithViews();
 
@@ -29,14 +37,32 @@ namespace Marvin.IDP
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 options.EmitStaticAudienceClaim = true;
             })
-                .AddInMemoryIdentityResources(Config.IdentityResources)
-                .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryApiResources(Config.Apis)
-                .AddInMemoryClients(Config.Clients)
+                //.AddInMemoryIdentityResources(Config.IdentityResources)
+                //.AddInMemoryApiScopes(Config.ApiScopes)
+                //.AddInMemoryApiResources(Config.Apis)
+                //.AddInMemoryClients(Config.Clients)
                 .AddTestUsers(TestUsers.Users);
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
+
+            var migrationsAssembly = typeof(Startup)
+                .GetTypeInfo().Assembly.GetName().Name;
+
+            builder.AddConfigurationStore(options =>
+            {
+                options.ConfigureDbContext = builder => 
+                    builder.UseNpgsql(marvinIDPDataDBConnectionString,
+                    options => options.MigrationsAssembly(migrationsAssembly));
+            });
+
+            builder.AddOperationalStore(options =>
+            {
+                options.ConfigureDbContext = builder => 
+                    builder.UseNpgsql(marvinIDPDataDBConnectionString,
+                    options => options.MigrationsAssembly(migrationsAssembly));
+                options.EnableTokenCleanup = true;
+            });
         }
 
         public void Configure(IApplicationBuilder app)
@@ -45,6 +71,8 @@ namespace Marvin.IDP
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            InitializeDatabase(app);
 
             // uncomment if you want to add MVC
             app.UseStaticFiles();
@@ -58,6 +86,57 @@ namespace Marvin.IDP
             {
                endpoints.MapDefaultControllerRoute();
             });
+        }
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices
+                .GetService<IServiceScopeFactory>().CreateScope())
+            {
+                serviceScope.ServiceProvider
+                    .GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+
+                var context = serviceScope.ServiceProvider
+                    .GetRequiredService<ConfigurationDbContext>();
+
+                context.Database.Migrate();
+
+                if (!context.Clients.Any())
+                {
+                    foreach (var client in Config.Clients)
+                    {
+                        context.Clients.Add(client.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+
+                if (!context.IdentityResources.Any())
+                {
+                    foreach (var resource in Config.IdentityResources)
+                    {
+                        context.IdentityResources.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+
+                if (!context.ApiResources.Any())
+                {
+                    foreach (var resource in Config.Apis)
+                    {
+                        context.ApiResources.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+
+                if (!context.ApiScopes.Any())
+                {
+                    foreach (var resource in Config.ApiScopes)
+                    {
+                        context.ApiScopes.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }                
+            }
         }
     }
 }
