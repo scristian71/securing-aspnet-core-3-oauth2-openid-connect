@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using IdentityServer4.EntityFramework.DbContexts;
 using System.Linq;
 using IdentityServer4.EntityFramework.Mappers;
+using Marvin.IDP.DbContexts;
+using Marvin.IDP.Services;
 
 namespace Marvin.IDP
 {
@@ -32,6 +34,13 @@ namespace Marvin.IDP
             // uncomment, if you want to add an MVC-based UI
             services.AddControllersWithViews();
 
+            services.AddDbContext<IdentityDbContext>(options =>
+            {
+                options.UseNpgsql(marvinIDPDataDBConnectionString);
+            });
+
+            services.AddScoped<ILocalUserService, LocalUserService>();
+
             var builder = services.AddIdentityServer(options =>
             {
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
@@ -41,10 +50,13 @@ namespace Marvin.IDP
                 //.AddInMemoryApiScopes(Config.ApiScopes)
                 //.AddInMemoryApiResources(Config.Apis)
                 //.AddInMemoryClients(Config.Clients)
-                .AddTestUsers(TestUsers.Users);
+                //.AddTestUsers(TestUsers.Users)
+                ;
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
+
+	    builder.AddProfileService<LocalUserProfileService>();
 
             var migrationsAssembly = typeof(Startup)
                 .GetTypeInfo().Assembly.GetName().Name;

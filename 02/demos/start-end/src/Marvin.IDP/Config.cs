@@ -38,7 +38,7 @@ namespace Marvin.IDP
                 new ApiResource(
                     "imagegalleryapi", 
                     "Image Gallery API",
-			new [] { "subscriptionlevel" })
+			        new [] { "subscriptionlevel" })
                     {
                         Scopes = {"imagegalleryapi.role"},
 			            ApiSecrets = { new Secret("apisecret".Sha256()) }
