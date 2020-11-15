@@ -21,11 +21,11 @@ namespace Marvin.IDP.Services
             string userName);
         Task<User> GetUserBySubjectAsync(
             string subject);        
-        void AddUser
-            (User userToAdd);    
-        //void AddUser(
-        //    User userToAdd, 
-        //    string password); 
+        // void AddUser
+        //     (User userToAdd);    
+        void AddUser(
+           User userToAdd, 
+           string password); 
         Task<bool> IsUserActive(
             string subject);
         //Task<bool> ActivateUser(

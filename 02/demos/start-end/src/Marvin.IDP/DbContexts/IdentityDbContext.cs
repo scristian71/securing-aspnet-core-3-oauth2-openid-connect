@@ -69,15 +69,15 @@ namespace Marvin.IDP.DbContexts
              {
                  Id = Guid.NewGuid(),
                  UserId = new Guid("13229d33-99e0-41b3-b18d-4f72127e3971"),
-                 Type = "address",
-                 Value = "Main Road 1"
+                 Type = "email",
+                 Value = "frank@someprovider.com"
              },
              new UserClaim()
              {
                  Id = Guid.NewGuid(),
                  UserId = new Guid("13229d33-99e0-41b3-b18d-4f72127e3971"),
-                 Type = "subscriptionlevel",
-                 Value = "FreeUser"
+                 Type = "address",
+                 Value = "Main Road 1"
              },
              new UserClaim()
              {
@@ -99,6 +99,13 @@ namespace Marvin.IDP.DbContexts
                  UserId = new Guid("96053525-f4a5-47ee-855e-0ea77fa6c55a"),
                  Type = "family_name",
                  Value = "Underwood"
+             }, 
+             new UserClaim()
+             {
+                 Id = Guid.NewGuid(),
+                 UserId = new Guid("96053525-f4a5-47ee-855e-0ea77fa6c55a"),
+                 Type = "email",
+                 Value = "claire@someprovider.com"
              },
              new UserClaim()
              {
@@ -111,17 +118,9 @@ namespace Marvin.IDP.DbContexts
              {
                  Id = Guid.NewGuid(),
                  UserId = new Guid("96053525-f4a5-47ee-855e-0ea77fa6c55a"),
-                 Type = "subscriptionlevel",
-                 Value = "PayingUser"
-             },
-             new UserClaim()
-             {
-                 Id = Guid.NewGuid(),
-                 UserId = new Guid("96053525-f4a5-47ee-855e-0ea77fa6c55a"),
                  Type = "country",
                  Value = "be"
              });
-
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
