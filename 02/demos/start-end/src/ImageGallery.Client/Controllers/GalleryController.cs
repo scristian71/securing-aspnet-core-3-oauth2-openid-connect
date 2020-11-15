@@ -97,8 +97,10 @@ namespace ImageGallery.Client.Controllers
             }
 
             // create an ImageForUpdate instance
-            var imageForUpdate = new ImageForUpdate() { 
-                Title = editImageViewModel.Title };
+            var imageForUpdate = new ImageForUpdate()
+            {
+                Title = editImageViewModel.Title
+            };
 
             // serialize it
             var serializedImageForUpdate = JsonSerializer.Serialize(imageForUpdate);
@@ -138,7 +140,7 @@ namespace ImageGallery.Client.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "PayingUser")]
+        [Authorize(Policy = "MustBePayingUser")]
         public IActionResult AddImage()
         {
             return View();
@@ -146,7 +148,7 @@ namespace ImageGallery.Client.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "PayingUser")]
+        [Authorize(Policy = "MustBePayingUser")]
         public async Task<IActionResult> AddImage(AddImageViewModel addImageViewModel)
         {
             if (!ModelState.IsValid)
@@ -172,8 +174,8 @@ namespace ImageGallery.Client.Controllers
             }
 
             // serialize it
-            var serializedImageForCreation = JsonSerializer.Serialize(imageForCreation);  
-            
+            var serializedImageForCreation = JsonSerializer.Serialize(imageForCreation);
+
             var httpClient = _httpClientFactory.CreateClient("APIClient");
 
             var request = new HttpRequestMessage(

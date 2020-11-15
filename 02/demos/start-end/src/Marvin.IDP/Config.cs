@@ -17,10 +17,6 @@ namespace Marvin.IDP
                 new IdentityResources.Profile(),
                 new IdentityResources.Address(),
                 new IdentityResource(
-                    "roles",
-                    "Your role(s)",
-                    new List<string>() { "role" }),
-                new IdentityResource(
                     "country",
                     "The country you're living in",
                     new List<string>() { "country" }),
@@ -42,7 +38,7 @@ namespace Marvin.IDP
                 new ApiResource(
                     "imagegalleryapi", 
                     "Image Gallery API",
-			        new List<string>() { "role" })
+			new [] { "subscriptionlevel" })
                     {
                         Scopes = {"imagegalleryapi.role"},
 			            ApiSecrets = { new Secret("apisecret".Sha256()) }
@@ -77,7 +73,6 @@ namespace Marvin.IDP
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Address,
-                        "roles",
                         "imagegalleryapi.role",
                         "country",
                         "subscriptionlevel"

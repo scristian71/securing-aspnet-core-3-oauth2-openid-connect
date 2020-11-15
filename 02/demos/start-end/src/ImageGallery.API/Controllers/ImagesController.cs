@@ -65,7 +65,7 @@ namespace ImageGallery.API.Controllers
         }
 
         [HttpPost()]
-        [Authorize(Roles = "PayingUser")]
+        [Authorize("MustBePayingUser")]
         public IActionResult CreateImage([FromBody] ImageForCreation imageForCreation)
         {
             // Automapper maps only the Title in our configuration

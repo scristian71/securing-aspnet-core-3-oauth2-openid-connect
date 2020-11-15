@@ -43,6 +43,15 @@ namespace ImageGallery.Client
                            policyBuilder.RequireClaim("country", "be");
                            policyBuilder.RequireClaim("subscriptionlevel", "PayingUser");
                        });
+
+
+                    authorizationOptions.AddPolicy(
+                      "MustBePayingUser",
+                      policyBuilder =>
+                      {
+                          policyBuilder.RequireAuthenticatedUser();
+                          policyBuilder.RequireClaim("subscriptionlevel", "PayingUser");
+                      });
                 });
 
             services.AddHttpContextAccessor();
@@ -56,6 +65,7 @@ namespace ImageGallery.Client
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
             }).AddHttpMessageHandler<BearerTokenHandler>();
+
             // create an HttpClient used for accessing the IDP
             services.AddHttpClient("IDPClient", client =>
             {
@@ -81,7 +91,6 @@ namespace ImageGallery.Client
                 options.ClientId = "imagegalleryclient";
                 options.ResponseType = "code";               
                 options.Scope.Add("address");
-                options.Scope.Add("roles");
                 options.Scope.Add("imagegalleryapi.role");
                 options.Scope.Add("subscriptionlevel");
                 options.Scope.Add("country");
@@ -90,7 +99,6 @@ namespace ImageGallery.Client
                 options.ClaimActions.DeleteClaim("idp");
                 options.ClaimActions.DeleteClaim("s_hash");
                 options.ClaimActions.DeleteClaim("auth_time");
-                options.ClaimActions.MapUniqueJsonKey("role", "role");
                 options.ClaimActions.MapUniqueJsonKey("subscriptionlevel", "subscriptionlevel");
                 options.ClaimActions.MapUniqueJsonKey("country", "country");
                 options.SaveTokens = true;
