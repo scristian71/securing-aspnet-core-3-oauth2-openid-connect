@@ -28,24 +28,24 @@ namespace Marvin.IDP.UserRegistration
                 throw new ArgumentNullException(nameof(interaction));
         }
 
-        // [HttpGet]
-        // public async Task<IActionResult> ActivateUser(string securityCode)
-        // {
-        //     if (await _localUserService.ActivateUser(securityCode))
-        //     {
-        //         ViewData["Message"] = "Your account was successfully activated.  " +
-        //             "Navigate to your client application to log in.";
-        //     }
-        //     else
-        //     {
-        //         ViewData["Message"] = "Your account couldn't be activated, " +
-        //             "please contact your administrator.";
-        //     }
+        [HttpGet]
+        public async Task<IActionResult> ActivateUser(string securityCode)
+        {
+            if (await _localUserService.ActivateUser(securityCode))
+            {
+                ViewData["Message"] = "Your account was successfully activated.  " +
+                    "Navigate to your client application to log in.";
+            }
+            else
+            {
+                ViewData["Message"] = "Your account couldn't be activated, " +
+                    "please contact your administrator.";
+            }
 
-        //     await _localUserService.SaveChangesAsync();
+            await _localUserService.SaveChangesAsync();
 
-        //     return View();
-        // }
+            return View();
+        }
 
         [HttpGet]
         public IActionResult RegisterUser(string returnUrl)
@@ -100,31 +100,31 @@ namespace Marvin.IDP.UserRegistration
 
             await _localUserService.SaveChangesAsync();
 
-            // create an activation link
-            // var link = Url.ActionLink("ActivateUser", "UserRegistration", 
-            //     new { securityCode = userToCreate.SecurityCode });
+            //create an activation link
+            var link = Url.ActionLink("ActivateUser", "UserRegistration", 
+                new { securityCode = userToCreate.SecurityCode });
 
-            // Debug.WriteLine(link);
+            Debug.WriteLine(link);
 
-            // return View("ActivationCodeSent");
+            return View("ActivationCodeSent");
 
             //// log the user in
             // issue authentication cookie with subject ID and username
-            var isuser = new IdentityServerUser(userToCreate.Subject)
-            {
-                DisplayName = userToCreate.Username
-            };
-            //don't add authentication props now        
-            await HttpContext.SignInAsync(isuser, null);
+            // var isuser = new IdentityServerUser(userToCreate.Subject)
+            // {
+            //     DisplayName = userToCreate.Username
+            // };
+            // //don't add authentication props now        
+            // await HttpContext.SignInAsync(isuser, null);
 
-            // continue with the flow     
-            if (_interaction.IsValidReturnUrl(model.ReturnUrl)
-               || Url.IsLocalUrl(model.ReturnUrl))
-            {
-               return Redirect(model.ReturnUrl);
-            }
+            // // continue with the flow     
+            // if (_interaction.IsValidReturnUrl(model.ReturnUrl)
+            //    || Url.IsLocalUrl(model.ReturnUrl))
+            // {
+            //    return Redirect(model.ReturnUrl);
+            // }
 
-            return Redirect("~/");
+            // return Redirect("~/");
 
         }
 
