@@ -14,6 +14,7 @@ using System.Linq;
 using IdentityServer4.EntityFramework.Mappers;
 using Marvin.IDP.DbContexts;
 using Marvin.IDP.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace Marvin.IDP
 {
@@ -39,6 +40,7 @@ namespace Marvin.IDP
                 options.UseNpgsql(marvinIDPDataDBConnectionString);
             });
 
+            services.AddScoped<IPasswordHasher<Entities.User>, PasswordHasher<Entities.User>>();
             services.AddScoped<ILocalUserService, LocalUserService>();
 
             var builder = services.AddIdentityServer(options =>

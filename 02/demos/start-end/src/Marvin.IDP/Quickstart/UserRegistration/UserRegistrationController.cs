@@ -68,7 +68,7 @@ namespace Marvin.IDP.UserRegistration
             {
                 Username = model.UserName,
                 Subject = Guid.NewGuid().ToString(),
-                // Email = model.Email,
+                Email = model.Email,
                 Active = false
             };
 
