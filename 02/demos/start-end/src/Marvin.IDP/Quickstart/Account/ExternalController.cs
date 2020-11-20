@@ -21,12 +21,22 @@ namespace IdentityServerHost.Quickstart.UI
     [SecurityHeaders]
     [AllowAnonymous]
     public class ExternalController : Controller
-    {
-        private readonly ILocalUserService _localUserService;
+    { 
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly ILogger<ExternalController> _logger;
         private readonly IEventService _events;
+        private readonly ILocalUserService _localUserService;
+        private readonly Dictionary<string, string> _googleClaimTypeMap =
+            new Dictionary<string, string>()
+        {
+            { "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname", 
+                    JwtClaimTypes.GivenName},
+            { "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname", 
+                    JwtClaimTypes.FamilyName},
+            { "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress", 
+                    JwtClaimTypes.Email}
+        };
 
         public ExternalController(
             IIdentityServerInteractionService interaction,
@@ -166,10 +176,24 @@ namespace IdentityServerHost.Quickstart.UI
             return (user, provider, providerUserId, claims);
         }
 
-        private async Task<Marvin.IDP.Entities.User> AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
+        private async Task<Marvin.IDP.Entities.User> AutoProvisionUser(
+            string provider, string providerUserId, IEnumerable<Claim> claims)
         {
-            var user = _localUserService.ProvisionUserFromExternalIdentity(provider, providerUserId, claims.ToList());
+            var mappedClaims = new List<Claim>();
+
+            foreach(var claim in claims)
+            {
+                if (_googleClaimTypeMap.ContainsKey(claim.Type))
+                {
+                    mappedClaims.Add(new Claim(_googleClaimTypeMap[claim.Type], claim.Value));
+                }
+            }
+
+            var user = _localUserService.ProvisionUserFromExternalIdentity(
+                provider, providerUserId, mappedClaims);
+            
             await _localUserService.SaveChangesAsync();
+            
             return user;
         }
 
