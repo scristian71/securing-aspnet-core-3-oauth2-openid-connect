@@ -36,13 +36,13 @@ namespace Marvin.IDP.Services
         Task<bool> SetPassword(
            string securityCode, 
            string password);
-        //Task<User> GetUserByExternalProvider(
-        //    string provider,
-        //    string providerIdentityKey);
-        //User ProvisionUserFromExternalIdentity(
-        //    string provider,
-        //    string providerIdentityKey, 
-        //    IEnumerable<Claim> claims);
+        Task<User> GetUserByExternalProvider(
+           string provider,
+           string providerIdentityKey);
+        User ProvisionUserFromExternalIdentity(
+           string provider,
+           string providerIdentityKey, 
+           IEnumerable<Claim> claims);
         //Task AddExternalProviderToUser(
         //    string subject, 
         //    string provider,

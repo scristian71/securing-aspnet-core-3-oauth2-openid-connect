@@ -27,7 +27,6 @@ namespace Marvin.IDP.Services
                 ?? throw new ArgumentNullException(nameof(passwordHasher));
         }
 
-
         public async Task<bool> IsUserActive(string subject)
         {
             if (string.IsNullOrWhiteSpace(subject))
@@ -340,25 +339,25 @@ namespace Marvin.IDP.Services
            return true;        
         }
 
-        //public async Task<User> GetUserByExternalProvider(
-        //    string provider, 
-        //    string providerIdentityKey)
-        //{
-        //    if (string.IsNullOrWhiteSpace(provider))
-        //    {
-        //        throw new ArgumentNullException(nameof(provider));
-        //    }
+        public async Task<User> GetUserByExternalProvider(
+           string provider, 
+           string providerIdentityKey)
+        {
+           if (string.IsNullOrWhiteSpace(provider))
+           {
+               throw new ArgumentNullException(nameof(provider));
+           }
 
-        //    if (string.IsNullOrWhiteSpace(providerIdentityKey))
-        //    {
-        //        throw new ArgumentNullException(nameof(providerIdentityKey));
-        //    }
+           if (string.IsNullOrWhiteSpace(providerIdentityKey))
+           {
+               throw new ArgumentNullException(nameof(providerIdentityKey));
+           }
 
-        //    var userLogin = await _context.UserLogins.Include(ul => ul.User)
-        //        .FirstOrDefaultAsync(ul => ul.Provider == provider && ul.ProviderIdentityKey == providerIdentityKey);
+           var userLogin = await _context.UserLogins.Include(ul => ul.User)
+               .FirstOrDefaultAsync(ul => ul.Provider == provider && ul.ProviderIdentityKey == providerIdentityKey);
 
-        //    return userLogin?.User;
-        //}
+           return userLogin?.User;
+        }
         
         //public async Task AddExternalProviderToUser(
         //    string subject,
@@ -388,44 +387,44 @@ namespace Marvin.IDP.Services
         //    });            
         //}
         
-        //public User ProvisionUserFromExternalIdentity(
-        //    string provider, 
-        //    string providerIdentityKey,
-        //    IEnumerable<Claim> claims)
-        //{
-        //    if (string.IsNullOrWhiteSpace(provider))
-        //    {
-        //        throw new ArgumentNullException(nameof(provider));
-        //    }
+        public User ProvisionUserFromExternalIdentity(
+           string provider, 
+           string providerIdentityKey,
+           IEnumerable<Claim> claims)
+        {
+           if (string.IsNullOrWhiteSpace(provider))
+           {
+               throw new ArgumentNullException(nameof(provider));
+           }
 
-        //    if (string.IsNullOrWhiteSpace(providerIdentityKey))
-        //    {
-        //        throw new ArgumentNullException(nameof(providerIdentityKey));
-        //    }
+           if (string.IsNullOrWhiteSpace(providerIdentityKey))
+           {
+               throw new ArgumentNullException(nameof(providerIdentityKey));
+           }
 
-        //    var user = new User()
-        //    {
-        //        Active = true,
-        //        Subject = Guid.NewGuid().ToString()
-        //    };
-        //    foreach (var claim in claims)
-        //    {
-        //        user.Claims.Add(new UserClaim()
-        //        {
-        //            Type = claim.Type,
-        //            Value = claim.Value
-        //        });
-        //    }
-        //    user.Logins.Add(new UserLogin()
-        //    {
-        //         Provider = provider,
-        //         ProviderIdentityKey = providerIdentityKey
-        //    });
+           var user = new User()
+           {
+               Active = true,
+               Subject = Guid.NewGuid().ToString()
+           };
+           foreach (var claim in claims)
+           {
+               user.Claims.Add(new UserClaim()
+               {
+                   Type = claim.Type,
+                   Value = claim.Value
+               });
+           }
+           user.Logins.Add(new UserLogin()
+           {
+                Provider = provider,
+                ProviderIdentityKey = providerIdentityKey
+           });
 
-        //    _context.Users.Add(user);
+           _context.Users.Add(user);
 
-        //    return user;
-        //}
+           return user;
+        }
       
 
         public async Task<bool> SaveChangesAsync()

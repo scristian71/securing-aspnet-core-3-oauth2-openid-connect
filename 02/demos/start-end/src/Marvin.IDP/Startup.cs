@@ -15,16 +15,18 @@ using IdentityServer4.EntityFramework.Mappers;
 using Marvin.IDP.DbContexts;
 using Marvin.IDP.Services;
 using Microsoft.AspNetCore.Identity;
+using IdentityServer4;
+using Microsoft.Extensions.Configuration;
 
 namespace Marvin.IDP
 {
     public class Startup
     {
-        public IWebHostEnvironment Environment { get; }
+        public IConfiguration Configuration { get; }
 
-        public Startup(IWebHostEnvironment environment)
+        public Startup(IConfiguration configuration)
         {
-            Environment = environment;
+            Configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -77,11 +79,24 @@ namespace Marvin.IDP
                     options => options.MigrationsAssembly(migrationsAssembly));
                 options.EnableTokenCleanup = true;
             });
+
+            services.AddAuthentication()
+                .AddGoogle("Google", options =>
+                {
+                    options.SignInScheme = 
+                        IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.ClientId = 
+                        Configuration["Google:ClientId"];
+                    options.ClientSecret = 
+                        Configuration["Google:ClientSecret"];
+                    options.SaveTokens = true;
+                });
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (Environment.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }

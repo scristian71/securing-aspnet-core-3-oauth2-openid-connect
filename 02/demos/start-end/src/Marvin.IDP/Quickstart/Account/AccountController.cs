@@ -114,7 +114,10 @@ namespace IdentityServerHost.Quickstart.UI
                 {
                     var user = await _localUserService.GetUserByUserNameAsync(model.Username);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(
-                        user.Username, user.Subject, user.Username, clientId: context?.Client.ClientId));
+                        user.Username, 
+                        user.Subject, 
+                        user.Username, 
+                        clientId: context?.Client.ClientId));
 
                     // only set explicit expiration here if user chooses "remember me". 
                     // otherwise we rely upon expiration configured in cookie middleware.
@@ -124,7 +127,8 @@ namespace IdentityServerHost.Quickstart.UI
                         props = new AuthenticationProperties
                         {
                             IsPersistent = true,
-                            ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration)
+                            ExpiresUtc = DateTimeOffset.UtcNow.Add(
+                                AccountOptions.RememberMeLoginDuration)
                         };
                     };
 
