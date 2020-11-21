@@ -55,6 +55,24 @@ namespace IdentityServerHost.Quickstart.UI
         /// Entry point into the login workflow
         /// </summary>
         [HttpGet]
+        public async Task<IActionResult> LinkExternalAccount(string returnUrl)
+        {
+            // build a model so we know what to show on the login page
+            var vm = await BuildLinkExternalAccountViewModelAsync(returnUrl);
+
+            if (vm.IsExternalLoginOnly)
+            {
+                // we only have one option for logging in and it's an external provider
+                return RedirectToAction("ChallengeLink", "External", new { scheme = vm.ExternalLoginScheme, returnUrl });
+            }
+
+            return View(vm);
+        }
+
+        /// <summary>
+        /// Entry point into the login workflow
+        /// </summary>
+        [HttpGet]
         public async Task<IActionResult> Login(string returnUrl)
         {
             // build a model so we know what to show on the login page
@@ -305,6 +323,66 @@ namespace IdentityServerHost.Quickstart.UI
             var vm = await BuildLoginViewModelAsync(model.ReturnUrl);
             vm.Username = model.Username;
             vm.RememberLogin = model.RememberLogin;
+            return vm;
+        }
+
+        private async Task<LinkExternalAccountViewModel> BuildLinkExternalAccountViewModelAsync(string returnUrl)
+        {
+            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
+            {
+                var local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
+
+                // this is meant to short circuit the UI and only trigger the one external IdP
+                var vm = new LinkExternalAccountViewModel
+                {
+                    ReturnUrl = returnUrl,
+                };
+
+                if (!local)
+                {
+                    vm.ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context.IdP } };
+                }
+
+                return vm;
+            }
+
+            var schemes = await _schemeProvider.GetAllSchemesAsync();
+
+            var providers = schemes
+                .Where(x => x.DisplayName != null)
+                .Select(x => new ExternalProvider
+                {
+                    DisplayName = x.DisplayName ?? x.Name,
+                    AuthenticationScheme = x.Name
+                }).ToList();
+
+            var allowLocal = true;
+            if (context?.Client.ClientId != null)
+            {
+                var client = await _clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
+                if (client != null)
+                {
+                    allowLocal = client.EnableLocalLogin;
+
+                    if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
+                    {
+                        providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
+                    }
+                }
+            }
+
+            return new LinkExternalAccountViewModel
+            {
+                ReturnUrl = returnUrl,
+                ExternalProviders = providers.ToArray()
+            };
+        }
+
+        private async Task<LinkExternalAccountViewModel> BuildLinkExternalAccountViewModelAsync(LoginInputModel model)
+        {
+            var vm = await BuildLinkExternalAccountViewModelAsync(model.ReturnUrl);
+
             return vm;
         }
 

@@ -24,6 +24,7 @@
                     
                     <div class="dropdown-menu">
                         <a class="dropdown-item" asp-action="Logout" asp-controller="Account">Logout</a>
+                        <a class="dropdown-item" asp-action="LinkExternalAccount" asp-controller="Account" asp-route-returnUrl=@Context.Request.GetEncodedPathAndQuery()>LinkExternalAccount</a>
                     </div>
               </li>
             </ul>

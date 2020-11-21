@@ -11,11 +11,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace IdentityServerHost.Quickstart.UI
 {
@@ -76,6 +78,36 @@ namespace IdentityServerHost.Quickstart.UI
                 Items =
                 {
                     { "returnUrl", returnUrl }, 
+                    { "scheme", scheme },
+                }
+            };
+
+            return Challenge(props, scheme);
+            
+        }
+
+        /// <summary>
+        /// initiate roundtrip to external authentication provider
+        /// </summary>
+        [HttpGet]
+        public IActionResult ChallengeLink(string scheme, string returnUrl)
+        {
+            if (string.IsNullOrEmpty(returnUrl)) returnUrl = "~/";
+
+            // validate returnUrl - either it is a valid OIDC URL or back to a local page
+            if (Url.IsLocalUrl(returnUrl) == false && _interaction.IsValidReturnUrl(returnUrl) == false)
+            {
+                // user might have clicked on a malicious link - should be logged
+                throw new Exception("invalid return URL");
+            }
+            
+            // start challenge and roundtrip the return URL and scheme 
+            var props = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action(nameof(CallbackLink)), 
+                Items =
+                {
+                    { "returnUrl", Base64UrlEncoder.Encode(returnUrl) }, 
                     { "scheme", scheme },
                 }
             };
@@ -175,7 +207,67 @@ namespace IdentityServerHost.Quickstart.UI
             return Redirect(returnUrl);
         }
 
+        /// <summary>
+        /// Post processing of external authentication
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> CallbackLink()
+        {
+            // read external identity from the temporary cookie
+            var result = await HttpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            if (result?.Succeeded != true)
+            {
+                throw new Exception("External authentication error");
+            }
+
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                var externalClaims = result.Principal.Claims.Select(c => $"{c.Type}: {c.Value}");
+                _logger.LogDebug("External claims: {@claims}", externalClaims);
+            }
+
+            // lookup our user and external provider info
+            var (provider, providerUserId, claims) = await FindFromExternalProvider(result);
+
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                var subject = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Subject);
+                await _localUserService.AddExternalProviderToUser(subject.Value, provider, providerUserId);
+                await _localUserService.SaveChangesAsync();
+            }
+
+            // delete temporary cookie used during external authentication
+            await HttpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+
+            // retrieve return URL
+            var returnUrl = Base64UrlEncoder.Decode(result.Properties.Items["returnUrl"]) ?? "~/";
+
+            // check if external login is in the context of an OIDC request
+            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+
+            if (context != null)
+            {
+                if (context.IsNativeClient())
+                {
+                    // The client is native, so this change in how to
+                    // return the response is for better UX for the end user.
+                    return this.LoadingPage("Redirect", returnUrl);
+                }
+            }
+
+            return Redirect(returnUrl);
+        }
+
         private async Task<(Marvin.IDP.Entities.User user, string provider, string providerUserId, IEnumerable<Claim> claims)> FindUserFromExternalProvider(AuthenticateResult result)
+        {
+            var (provider, providerUserId, claims) = await FindFromExternalProvider(result);
+            // find external user
+            var user = await _localUserService.GetUserByExternalProvider(provider, providerUserId);
+
+            return (user, provider, providerUserId, claims);
+        }
+
+        private async Task<(string provider, string providerUserId, IEnumerable<Claim> claims)> FindFromExternalProvider(AuthenticateResult result)
         {
             var externalUser = result.Principal;
 
@@ -193,10 +285,7 @@ namespace IdentityServerHost.Quickstart.UI
             var provider = result.Properties.Items["scheme"];
             var providerUserId = userIdClaim.Value;
 
-            // find external user
-            var user = await _localUserService.GetUserByExternalProvider(provider, providerUserId);
-
-            return (user, provider, providerUserId, claims);
+            return (provider, providerUserId, claims);
         }
 
         private async Task<Marvin.IDP.Entities.User> AutoProvisionUser(
