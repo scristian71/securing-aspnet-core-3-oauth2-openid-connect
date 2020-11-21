@@ -92,6 +92,18 @@ namespace Marvin.IDP
                         Configuration["Google:ClientSecret"];
                     options.SaveTokens = true;
                 });
+
+            services.AddAuthentication()
+                .AddMicrosoftAccount(options => {
+                    options.SignInScheme = 
+                        IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.ClientId = 
+                        Configuration["Microsoft:ClientId"];
+                    options.ClientSecret = 
+                        Configuration["Microsoft:ClientSecret"];
+                });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
