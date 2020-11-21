@@ -388,6 +388,8 @@ namespace Marvin.IDP.Services
         //}
         
         public User ProvisionUserFromExternalIdentity(
+           string userName, 
+           string email,
            string provider, 
            string providerIdentityKey,
            IEnumerable<Claim> claims)
@@ -404,8 +406,10 @@ namespace Marvin.IDP.Services
 
            var user = new User()
            {
-               Active = true,
-               Subject = Guid.NewGuid().ToString()
+               Active = false,
+               Subject = Guid.NewGuid().ToString(),
+               Username = userName,
+               Email = email
            };
            foreach (var claim in claims)
            {
@@ -422,6 +426,15 @@ namespace Marvin.IDP.Services
            });
 
            _context.Users.Add(user);
+
+            using (var randomNumberGenerator = new RNGCryptoServiceProvider())
+            {
+                var securityCodeData = new byte[128];
+                randomNumberGenerator.GetBytes(securityCodeData);
+                user.SecurityCode = Convert.ToBase64String(securityCodeData);
+            }
+
+            user.SecurityCodeExpirationDate = DateTime.UtcNow.AddHours(1);
 
            return user;
         }

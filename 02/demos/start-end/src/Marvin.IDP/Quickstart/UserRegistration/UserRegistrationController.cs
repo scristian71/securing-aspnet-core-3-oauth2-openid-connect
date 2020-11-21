@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Marvin.IDP.UserRegistration
@@ -124,7 +125,63 @@ namespace Marvin.IDP.UserRegistration
             //    return Redirect(model.ReturnUrl);
             // }
 
-            // return Redirect("~/");
+            //return Redirect("~/");
+
+        }
+
+        [HttpGet]
+        public IActionResult RegisterUserFromGoogle(RegisterUserFromGoogleInputViewModel model)
+        {
+            if (model is null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            return View(new RegisterUserFromGoogleViewModel()
+            {
+                GivenName = model.GivenName,
+                FamilyName = model.FamilyName,
+                Email = model.Email,
+                Provider = model.Provider,
+                ProviderUserId = model.ProviderUserId
+
+            });
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterUserFromGoogle(
+            RegisterUserFromGoogleViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            // create claims
+            var claims = new List<Claim>()
+            {
+                new Claim(JwtClaimTypes.Email, model.Email),
+                new Claim(JwtClaimTypes.GivenName, model.GivenName),
+                new Claim(JwtClaimTypes.FamilyName, model.FamilyName),
+                new Claim(JwtClaimTypes.Address, model.Address),
+                new Claim("country", model.Country)
+            };
+
+            // provision the user
+            var user = _localUserService.
+                ProvisionUserFromExternalIdentity(model.UserName, model.Email,
+                 model.Provider, model.ProviderUserId, claims);
+            
+            await _localUserService.SaveChangesAsync();
+
+            //create an activation link
+            var link = Url.ActionLink("ActivateUser", "UserRegistration", 
+                new { securityCode = user.SecurityCode });
+
+            Debug.WriteLine(link);
+
+            return View("ActivationCodeSent");
 
         }
 

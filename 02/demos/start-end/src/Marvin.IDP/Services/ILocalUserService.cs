@@ -40,6 +40,8 @@ namespace Marvin.IDP.Services
            string provider,
            string providerIdentityKey);
         User ProvisionUserFromExternalIdentity(
+           string userName,
+           string email, 
            string provider,
            string providerIdentityKey, 
            IEnumerable<Claim> claims);
