@@ -232,59 +232,59 @@ namespace Marvin.IDP.Services
             return true;
         }
 
-        //public async Task<bool> AddUserSecret(string subject, string name, string secret)
-        //{
-        //    if (string.IsNullOrWhiteSpace(subject))
-        //    {
-        //        throw new ArgumentNullException(nameof(subject));
-        //    }
+        public async Task<bool> AddUserSecret(string subject, string name, string secret)
+        {
+           if (string.IsNullOrWhiteSpace(subject))
+           {
+               throw new ArgumentNullException(nameof(subject));
+           }
 
-        //    if (string.IsNullOrWhiteSpace(name))
-        //    {
-        //        throw new ArgumentNullException(nameof(name));
-        //    }
+           if (string.IsNullOrWhiteSpace(name))
+           {
+               throw new ArgumentNullException(nameof(name));
+           }
 
-        //    if (string.IsNullOrWhiteSpace(secret))
-        //    {
-        //        throw new ArgumentNullException(nameof(secret));
-        //    }
+           if (string.IsNullOrWhiteSpace(secret))
+           {
+               throw new ArgumentNullException(nameof(secret));
+           }
 
-        //    var user = await GetUserBySubjectAsync(subject); 
+           var user = await GetUserBySubjectAsync(subject); 
             
-        //    if (user == null)
-        //    {
-        //        return false;
-        //    }
+           if (user == null)
+           {
+               return false;
+           }
 
-        //    user.Secrets.Add(new UserSecret() { Name = name, Secret = secret });             
-        //    return true;
-        //}
+           user.Secrets.Add(new UserSecret() { Name = name, Secret = secret });             
+           return true;
+        }
 
-        //public async Task<bool> UserHasRegisteredTotpSecret(string subject)
-        //{
-        //    if (string.IsNullOrWhiteSpace(subject))
-        //    {
-        //        throw new ArgumentNullException(nameof(subject));
-        //    }
+        public async Task<bool> UserHasRegisteredTotpSecret(string subject)
+        {
+           if (string.IsNullOrWhiteSpace(subject))
+           {
+               throw new ArgumentNullException(nameof(subject));
+           }
 
-        //    return await _context.UserSecrets.AnyAsync(u => u.User.Subject == subject && u.Name == "TOTP");
-        //}
+           return await _context.UserSecrets.AnyAsync(u => u.User.Subject == subject && u.Name == "TOTP");
+        }
 
-        //public async Task<UserSecret> GetUserSecret(string subject, string name)
-        //{
-        //    if (string.IsNullOrWhiteSpace(subject))
-        //    {
-        //        throw new ArgumentNullException(nameof(subject));
-        //    }
+        public async Task<UserSecret> GetUserSecret(string subject, string name)
+        {
+           if (string.IsNullOrWhiteSpace(subject))
+           {
+               throw new ArgumentNullException(nameof(subject));
+           }
 
-        //    if (string.IsNullOrWhiteSpace(name))
-        //    {
-        //        throw new ArgumentNullException(nameof(name));
-        //    }
+           if (string.IsNullOrWhiteSpace(name))
+           {
+               throw new ArgumentNullException(nameof(name));
+           }
 
-        //    return await _context.UserSecrets
-        //        .FirstOrDefaultAsync(u => u.User.Subject == subject && u.Name == name);
-        //}
+           return await _context.UserSecrets
+               .FirstOrDefaultAsync(u => u.User.Subject == subject && u.Name == name);
+        }
 
         public async Task<string> InitiatePasswordResetRequest(string email)
         {

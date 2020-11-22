@@ -17,6 +17,8 @@ using Marvin.IDP.Services;
 using Microsoft.AspNetCore.Identity;
 using IdentityServer4;
 using Microsoft.Extensions.Configuration;
+using AspNetCoreRequireMfaOidc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Marvin.IDP
 {
@@ -104,6 +106,21 @@ namespace Marvin.IDP
                         Configuration["Microsoft:ClientSecret"];
                 });
 
+            services.AddAuthentication(options =>
+            {
+                options.RequireAuthenticatedSignIn = false;
+
+            }).AddCookie("idsrv.mfa");
+
+            // services.AddSingleton<IAuthorizationHandler, RequireMfaHandler>();
+
+            // services.AddAuthorization(options =>
+            // {
+            //     options.AddPolicy("RequireMfa", policyIsAdminRequirement =>
+            //     {
+            //         policyIsAdminRequirement.Requirements.Add(new IRequireMfa());
+            //     });
+            // });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
