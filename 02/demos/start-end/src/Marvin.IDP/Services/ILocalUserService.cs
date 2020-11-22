@@ -9,9 +9,6 @@ namespace Marvin.IDP.Services
 {
     public interface ILocalUserService
     { 
-        // Task<bool> ValidateClearTextCredentialsAsync(
-        //     string userName, 
-        //     string password); 
         Task<bool> ValidateCredentialsAsync(
            string userName,
            string password);
@@ -20,9 +17,7 @@ namespace Marvin.IDP.Services
         Task<User> GetUserByUserNameAsync(
             string userName);
         Task<User> GetUserBySubjectAsync(
-            string subject);        
-        // void AddUser
-        //     (User userToAdd);    
+            string subject);          
         void AddUser(
            User userToAdd, 
            string password); 

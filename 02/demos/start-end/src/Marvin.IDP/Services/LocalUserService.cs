@@ -44,31 +44,6 @@ namespace Marvin.IDP.Services
             return user.Active;
         }
          
-        // public async Task<bool> ValidateClearTextCredentialsAsync(string userName,
-        //   string password)
-        // {
-        //     if (string.IsNullOrWhiteSpace(userName) ||
-        //         string.IsNullOrWhiteSpace(password))
-        //     {
-        //         return false;
-        //     }
-
-        //     var user = await GetUserByUserNameAsync(userName);
-
-        //     if (user == null)
-        //     {
-        //         return false;
-        //     }
-
-        //     if (!user.Active)
-        //     {
-        //         return false;
-        //     }
-
-        //     // Validate credentials
-        //     return (user.Password == password);
-        // }
-
         public async Task<bool> ValidateCredentialsAsync(string userName, 
            string password)
         {
@@ -162,51 +137,9 @@ namespace Marvin.IDP.Services
             userToAdd.SecurityCodeExpirationDate = DateTime.UtcNow.AddHours(1);
 
             userToAdd.Password = _passwordHasher.HashPassword(userToAdd, password);
-            //userToAdd.Password = password;
-            
-            // userToAdd.Active = true;
 
             _context.Users.Add(userToAdd);
         }
-
-        //public void AddUser(User userToAdd, string password)
-        //{
-        //    if (userToAdd == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(userToAdd));
-        //    }
-
-        //    if (string.IsNullOrWhiteSpace(password))
-        //    {
-        //        throw new ArgumentNullException(nameof(password));
-        //    }
-
-        //    if (_context.Users.Any(u => u.UserName == userToAdd.UserName))
-        //    {
-        //        // in a real-life scenario you'll probably want to 
-        //        // return this a a validation issue
-        //        throw new Exception("Username must be unique");
-        //    }
-
-        //    if (_context.Users.Any(u => u.Email == userToAdd.Email))
-        //    {
-        //        // in a real-life scenario you'll probably want to 
-        //        // return this a a validation issue
-        //        throw new Exception("Email must be unique");
-        //    }
-
-        //    // hash & salt the password
-        //    userToAdd.Password = _passwordHasher.HashPassword(userToAdd, password);
-
-        //    using (var randomNumberGenerator = new RNGCryptoServiceProvider())
-        //    {
-        //        var securityCodeData = new byte[128];
-        //        randomNumberGenerator.GetBytes(securityCodeData);
-        //        userToAdd.SecurityCode = Convert.ToBase64String(securityCodeData);
-        //    }
-        //    userToAdd.SecurityCodeExpirationDate = DateTime.UtcNow.AddHours(1);
-        //    _context.Users.Add(userToAdd);
-        //}
 
         public async Task<bool> ActivateUser(string securityCode)
         {
@@ -441,7 +374,6 @@ namespace Marvin.IDP.Services
            return user;
         }
       
-
         public async Task<bool> SaveChangesAsync()
         {
             return (await _context.SaveChangesAsync() > 0);

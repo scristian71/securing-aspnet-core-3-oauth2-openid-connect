@@ -17,7 +17,6 @@ using Marvin.IDP.Services;
 using Microsoft.AspNetCore.Identity;
 using IdentityServer4;
 using Microsoft.Extensions.Configuration;
-using AspNetCoreRequireMfaOidc;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Marvin.IDP
@@ -51,13 +50,7 @@ namespace Marvin.IDP
             {
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 options.EmitStaticAudienceClaim = true;
-            })
-                //.AddInMemoryIdentityResources(Config.IdentityResources)
-                //.AddInMemoryApiScopes(Config.ApiScopes)
-                //.AddInMemoryApiResources(Config.Apis)
-                //.AddInMemoryClients(Config.Clients)
-                //.AddTestUsers(TestUsers.Users)
-                ;
+            });
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
@@ -111,16 +104,6 @@ namespace Marvin.IDP
                 options.RequireAuthenticatedSignIn = false;
 
             }).AddCookie("idsrv.mfa");
-
-            // services.AddSingleton<IAuthorizationHandler, RequireMfaHandler>();
-
-            // services.AddAuthorization(options =>
-            // {
-            //     options.AddPolicy("RequireMfa", policyIsAdminRequirement =>
-            //     {
-            //         policyIsAdminRequirement.Requirements.Add(new IRequireMfa());
-            //     });
-            // });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -104,6 +104,7 @@ namespace IdentityServerHost.Quickstart.UI
                 }
 
                 var subject = result.Principal.FindFirst(JwtClaimTypes.Subject)?.Value;
+                
                 var user = await _localUserService.GetUserBySubjectAsync(subject);
 
                 var userSecret = await _localUserService.GetUserSecret(subject, "TOTP");

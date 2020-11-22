@@ -16,7 +16,7 @@ namespace Marvin.IDP
     {
         private readonly ILocalUserService _localUserService;
         private readonly char[] chars =
-           "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
+           "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".ToCharArray();
 
         public MfaRegistrationController(
             ILocalUserService localUserService)
