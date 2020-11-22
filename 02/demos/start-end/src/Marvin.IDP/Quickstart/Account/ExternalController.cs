@@ -10,10 +10,12 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -232,8 +234,20 @@ namespace IdentityServerHost.Quickstart.UI
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 var subject = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Subject);
-                await _localUserService.AddExternalProviderToUser(subject.Value, provider, providerUserId);
-                await _localUserService.SaveChangesAsync();
+
+                try
+                {
+                    await _localUserService.AddExternalProviderToUser(
+                        subject.Value, 
+                        provider, 
+                        providerUserId);
+
+                    await _localUserService.SaveChangesAsync();
+                }
+                catch (DbUpdateException e)
+                {
+                    Debug.WriteLine(e.Message);
+                }                
             }
 
             // delete temporary cookie used during external authentication

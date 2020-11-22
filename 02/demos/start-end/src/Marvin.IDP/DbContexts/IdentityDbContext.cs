@@ -125,6 +125,10 @@ namespace Marvin.IDP.DbContexts
                  Type = "country",
                  Value = "be"
              });
+
+            modelBuilder.Entity<UserLogin>()
+                .HasIndex(ul => new {ul.Provider, ul.ProviderIdentityKey })
+                .IsUnique();             
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
