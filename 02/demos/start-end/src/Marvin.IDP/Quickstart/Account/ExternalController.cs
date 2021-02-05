@@ -144,7 +144,7 @@ namespace IdentityServerHost.Quickstart.UI
                 // this might be where you might initiate a custom workflow for user registration
                 // in this sample we don't show how that would be done, as our sample implementation
                 // simply auto-provisions new external user
-                if (provider == "Google")
+                if (provider == "Google" || provider == "Microsoft")
                 {
                     // redirect to the RegisterUserFromGoogle view.  
                     return RedirectToAction(

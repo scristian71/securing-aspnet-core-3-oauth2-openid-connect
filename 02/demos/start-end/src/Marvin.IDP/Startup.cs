@@ -97,6 +97,7 @@ namespace Marvin.IDP
                         Configuration["Microsoft:ClientId"];
                     options.ClientSecret = 
                         Configuration["Microsoft:ClientSecret"];
+                    options.SaveTokens = true;
                 });
 
             services.AddAuthentication(options =>
