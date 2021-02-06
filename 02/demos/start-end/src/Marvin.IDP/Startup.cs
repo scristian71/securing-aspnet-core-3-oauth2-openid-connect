@@ -33,7 +33,7 @@ namespace Marvin.IDP
         public void ConfigureServices(IServiceCollection services)
         {
             var marvinIDPDataDBConnectionString = 
-                "Host=127.0.0.1; Port=5433; Username=oauth_idt; Password=idt123; Database=oauth_idt; pooling=true";
+                Configuration["ConnectionStrings:IdpDBConnectionString"];
 
             // uncomment, if you want to add an MVC-based UI
             services.AddControllersWithViews();
