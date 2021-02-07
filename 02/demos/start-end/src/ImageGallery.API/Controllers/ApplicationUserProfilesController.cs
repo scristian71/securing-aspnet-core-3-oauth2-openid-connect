@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using ImageGallery.API.Services;
-using ImageGallery.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ImageGallery.API.Controllers
 {

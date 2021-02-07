@@ -41,7 +41,7 @@ namespace ImageGallery.API.Controllers
             var imagesFromRepo = _galleryRepository.GetImages(ownerId);
 
             // map to model
-            var imagesToReturn = _mapper.Map<IEnumerable<ImageGallery.Model.Image>>(imagesFromRepo);
+            var imagesToReturn = _mapper.Map<IEnumerable<Model.Image>>(imagesFromRepo);
 
             // return
             return Ok(imagesToReturn);
@@ -58,14 +58,14 @@ namespace ImageGallery.API.Controllers
                 return NotFound();
             }
 
-            var imageToReturn = _mapper.Map<ImageGallery.Model.Image>(imageFromRepo);
+            var imageToReturn = _mapper.Map<Model.Image>(imageFromRepo);
 
             return Ok(imageToReturn);
         }
 
         [HttpPost()]
         [Authorize("MustBePayingUser")]
-        public IActionResult CreateImage([FromBody] ImageGallery.Model.ImageForCreation imageForCreation)
+        public IActionResult CreateImage([FromBody] Model.ImageForCreation imageForCreation)
         {
             // Automapper maps only the Title in our configuration
             var imageEntity = _mapper.Map<Entities.Image>(imageForCreation);
@@ -98,7 +98,7 @@ namespace ImageGallery.API.Controllers
 
             _galleryRepository.Save();
 
-            var imageToReturn = _mapper.Map<ImageGallery.Model.Image>(imageEntity);
+            var imageToReturn = _mapper.Map<Model.Image>(imageEntity);
 
             return CreatedAtRoute("GetImage",
                 new { id = imageToReturn.Id },
@@ -126,7 +126,7 @@ namespace ImageGallery.API.Controllers
         [HttpPut("{id}")]
         [Authorize("MustOwnImage")]
         public IActionResult UpdateImage(Guid id, 
-            [FromBody] ImageGallery.Model.ImageForUpdate imageForUpdate)
+            [FromBody] Model.ImageForUpdate imageForUpdate)
         {
             var imageFromRepo = _galleryRepository.GetImage(id);
             if (imageFromRepo == null)
