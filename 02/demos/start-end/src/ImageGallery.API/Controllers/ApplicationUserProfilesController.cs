@@ -55,7 +55,7 @@ namespace ImageGallery.API.Controllers
 
         [HttpPost()]
         public IActionResult CreateApplicationUserProfile(
-            [FromBody] ApplicationUserProfileForCreation applicationUserProfileForCreation)
+            [FromBody] Model.ApplicationUserProfileForCreation applicationUserProfileForCreation)
         {
             // currently the ApplicationUserProfileForCreation object doesn't have any properties,
             // as only the subscriptionlevel can be set and that's set to FreeUser for all

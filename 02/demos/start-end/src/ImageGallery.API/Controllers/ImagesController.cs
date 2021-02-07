@@ -66,7 +66,7 @@ namespace ImageGallery.API.Controllers
 
         [HttpPost()]
         [Authorize("MustBePayingUser")]
-        public IActionResult CreateImage([FromBody] ImageForCreation imageForCreation)
+        public IActionResult CreateImage([FromBody] Model.ImageForCreation imageForCreation)
         {
             // Automapper maps only the Title in our configuration
             var imageEntity = _mapper.Map<Entities.Image>(imageForCreation);
@@ -127,7 +127,7 @@ namespace ImageGallery.API.Controllers
         [HttpPut("{id}")]
         [Authorize("MustOwnImage")]
         public IActionResult UpdateImage(Guid id, 
-            [FromBody] ImageForUpdate imageForUpdate)
+            [FromBody] Model.ImageForUpdate imageForUpdate)
         {
             var imageFromRepo = _galleryRepository.GetImage(id);
             if (imageFromRepo == null)
