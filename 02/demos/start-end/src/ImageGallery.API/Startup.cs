@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
 
 namespace ImageGallery.API
@@ -70,9 +69,9 @@ namespace ImageGallery.API
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = "https://localhost:44318";
-                    options.ApiName = "imagegalleryapi";
-                    options.ApiSecret = "apisecret";
+                    options.Authority = Configuration["Idp:Authority"];
+                    options.ApiName = Configuration["Idp:ApiName"];
+                    options.ApiSecret = Configuration["Idp:ApiSecret"];
                 });
 
             // register the DbContext on the container, getting the connection string from
