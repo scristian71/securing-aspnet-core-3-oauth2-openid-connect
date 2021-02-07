@@ -11,22 +11,26 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Marvin.IDP.UserRegistration
 {
     public class UserRegistrationController : Controller
     {
         private readonly ILocalUserService _localUserService;
+        private readonly ILogger<UserRegistrationController> _logger;
         private readonly IIdentityServerInteractionService _interaction;
 
         public UserRegistrationController(
             ILocalUserService localUserService,
-            IIdentityServerInteractionService interaction)
+            IIdentityServerInteractionService interaction, 
+            ILogger<UserRegistrationController> logger)
         {
             _localUserService = localUserService ??
                 throw new ArgumentNullException(nameof(localUserService));
             _interaction = interaction ??
                 throw new ArgumentNullException(nameof(interaction));
+            _logger = logger;
         }
 
         [HttpGet]
@@ -179,8 +183,11 @@ namespace Marvin.IDP.UserRegistration
             var link = Url.ActionLink("ActivateUser", "UserRegistration", 
                 new { securityCode = user.SecurityCode });
 
-            Debug.WriteLine(link);
-
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug(link);
+            }
+            
             return View("ActivationCodeSent");
 
         }
