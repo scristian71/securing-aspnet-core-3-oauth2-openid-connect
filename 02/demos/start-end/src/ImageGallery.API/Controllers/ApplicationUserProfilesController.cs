@@ -83,7 +83,7 @@ namespace ImageGallery.API.Controllers
 
             _galleryRepository.Save();
 
-            var applicationUserProfileToReturn = _mapper.Map<Image>(applicationUserProfileEntity);
+            var applicationUserProfileToReturn = _mapper.Map<Model.Image>(applicationUserProfileEntity);
 
             return CreatedAtRoute("GetApplicationUserProfile",
                 new { 

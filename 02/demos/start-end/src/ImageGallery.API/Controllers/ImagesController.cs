@@ -99,7 +99,7 @@ namespace ImageGallery.API.Controllers
 
             _galleryRepository.Save();
 
-            var imageToReturn = _mapper.Map<Image>(imageEntity);
+            var imageToReturn = _mapper.Map<Model.Image>(imageEntity);
 
             return CreatedAtRoute("GetImage",
                 new { id = imageToReturn.Id },
