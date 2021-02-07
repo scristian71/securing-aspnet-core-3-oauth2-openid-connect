@@ -63,14 +63,14 @@ namespace ImageGallery.Client
             // create an HttpClient used for accessing the API
             services.AddHttpClient("APIClient", client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44366/");
+                client.BaseAddress = new Uri(Configuration["ServerUrl:API"]);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
             }).AddHttpMessageHandler<BearerTokenHandler>();
 
             services.AddHttpClient("BasicAPIClient", client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44366/");
+                client.BaseAddress = new Uri(Configuration["ServerUrl:API"]);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
             });
@@ -78,7 +78,7 @@ namespace ImageGallery.Client
             // create an HttpClient used for accessing the IDP
             services.AddHttpClient("IDPClient", client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44318/");
+                client.BaseAddress = new Uri(Configuration["ServerUrl:IdP"]);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
             });
@@ -96,7 +96,7 @@ namespace ImageGallery.Client
             .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
             {
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.Authority = "https://localhost:44318/";
+                options.Authority = Configuration["ServerUrl:IdP"];
                 options.ClientId = "imagegalleryclient";
                 options.ResponseType = "code";               
                 options.Scope.Add("address");
