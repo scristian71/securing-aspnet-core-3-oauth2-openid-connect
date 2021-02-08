@@ -117,6 +117,7 @@ namespace ImageGallery.Client
                     NameClaimType = JwtClaimTypes.GivenName,
                     RoleClaimType = JwtClaimTypes.Role
                 };
+                options.MetadataAddress = Configuration["ServerUrl:IdP"] + ".well-known/openid-configuration";
             });
 
             services.AddSingleton<IPostConfigureOptions<OpenIdConnectOptions>, 
