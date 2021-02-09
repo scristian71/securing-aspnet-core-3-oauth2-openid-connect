@@ -1,0 +1,59 @@
+version: '2'
+
+services:
+  idp:
+    container_name: cstestidp
+    image: cstestidp:latest
+    restart: always
+    ports:
+      - 44318:44318
+    volumes:
+      - /home/ubuntu/live/cstestidp.cspr.ro/:/live:ro
+    networks:
+      vpcbr:
+        ipv4_address: 172.21.1.2
+
+  api:
+    container_name: cstestapi
+    image: cstestapi:latest
+    restart: always
+    volumes:
+      - /home/ubuntu/live/cstestapi.cspr.ro/:/live:ro
+    hostname: cstestapi.cspr.ro
+    extra_hosts:
+      - cstestidp.cspr.ro:172.21.1.2
+    networks:
+      vpcbr:
+        ipv4_address: 172.21.1.3
+    depends_on:
+     - idp
+
+  app:
+    container_name: cstestapp
+    image: cstestapp:latest
+    restart: always
+    volumes:
+      - /home/ubuntu/live/cstestapp.cspr.ro/:/live:ro
+    hostname: cstestapp.cspr.ro
+    extra_hosts:
+      - cstestidp.cspr.ro:172.21.1.2
+      - cstestapi.cspr.ro:172.21.1.3
+    ports:
+      - 5001:5001
+    networks:
+      vpcbr:
+        ipv4_address: 172.21.1.4
+    depends_on:
+     - api
+
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+        - 
+         subnet: 172.21.1.0/24
+         gateway: 172.21.1.1
+
+
